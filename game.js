@@ -1,4 +1,5 @@
 import{ createAnimations } from './animations.js' //importamos las animaciones de mario
+import { checkControls } from './controls.js'
 
 const config ={
     type: Phaser.AUTO, //webgl, canvas
@@ -85,46 +86,23 @@ function create() {
     this.cameras.main.setBounds(0, 0, 2000, config.height) //limites de la camara
     this.cameras.main.startFollow(this.mario) //la camara sigue a mario
 
-    createAnimations(this) //creamos las animaciones de mario
+    createAnimations(this) //creamos las animaciones de mario animations.js
 
     this.keys = this.input.keyboard.createCursorKeys()
         
 }
 function update() {
 
-    const {keys, mario } = this
-    const isMarioTouchingFloor = mario.body.touching.down //si mario toca el suelo
-    const isLeftKeyDown = keys.left.isDown //si la tecla izquierda esta presionada
-    const isRightKeyDown = keys.right.isDown //si la tecla derecha esta presionada
-    const isUpKeyDown = keys.up.isDown //si la tecla arriba esta presionada
+    checkControls(this) //verificamos los controles del teclado controls.js
 
-    if(this.mario.isDead) return
+    const { mario, sound, scene } = this //desestructuramos el objeto this para obtener mario y las teclas
 
-    if (isLeftKeyDown) {
-        isMarioTouchingFloor && mario.anims.play('mario-walk', true)
-        mario.x -=2
-        mario.flipX = true //giramos el sprite de mario
-    }
-    else if (isRightKeyDown) {
-        isMarioTouchingFloor && mario.anims.play('mario-walk', true)
-        mario.x += 2
-        mario.flipX = false //giramos el sprite de mario
-    }else if (isMarioTouchingFloor) { //si mario toca el suelo
-        mario.anims.play('mario-idle', true)
-    }
-
-    if (isUpKeyDown && isMarioTouchingFloor) { //si mario toca el suelo
-        mario.setVelocityY(-300) //salto
-        mario.anims.play('mario-jump', true)
-        this.sound.add('jump', {volume: 0.01 }).play() //reproducimos el sonido de salto
-
-    }
-
+    // Comprobar si Mario ha muerto
     if (mario.y >= config.height){
         mario.isDead = true //mario muere si cae al suelo
         mario.anims.play('mario-dead', true)
         mario.setCollideWorldBounds(false) //mario no colisiona con el mundo
-        this.sound.add('gameover', { volume: 0.1 }).play() //reproducimos el sonido de game over;
+        sound.add('gameover', { volume: 0.1 }).play() //reproducimos el sonido de game over;
 
         setTimeout(() => {
             gameOverSound.stop(); // detenemos el sonido después de un tiempo
@@ -134,9 +112,8 @@ function update() {
             mario.setVelocityY(-350)
         }, 100)
 
-
         setTimeout(() => {
-            this.scene.restart() //reinicia la escena
+            scene.restart() //reinicia la escena
         }, 3000) //reinicia la escena despues de 2 segundos
     }
 }
