@@ -1,16 +1,16 @@
 import{ createAnimations } from './animations.js' //importamos las animaciones de mario
 
 const config ={
-    type: Phaser.AUTO, //webgl or canvas
+    type: Phaser.AUTO, //webgl, canvas
     width: 256,
     height: 244,
     backgroundColor: '#0492b8',
-    parent: 'game',
-    physics: {
-        default: 'arcade',
+    parent: 'game', //id del div donde se va a renderizar el juego
+    physics: { //configuracion de la fisica del juego
+        default: 'arcade', 
         arcade: {
             gravity: { y: 300},
-            debug: false //no se muestra el debug
+            debug: false //debug = true para ver los limites de los objetos
         }
     },
 
@@ -56,7 +56,7 @@ function preload() {
 
 function create() {
     //image(x,y,id-del-asset)
-    this.add.image(0,0, 'cloud1')
+    this.add.image(100,50, 'cloud1')
         .setScale(0.15)
         .setOrigin(0,0)
 
@@ -72,17 +72,15 @@ function create() {
         .setOrigin(0,0.5)
         .refreshBody()
 
-    this.mario = this.physics.add.sprite(50,100,'mario')
+    this.mario = this.physics.add.sprite(50, 100, 'mario')
         .setOrigin(0,1)
         .setCollideWorldBounds(true) //evita que el sprite salga de la pantalla
-        .setGravityY(500) //gravedad del sprite
+        .setGravityY(300) //gravedad del sprite
 
         
     this.physics.world.setBounds(0, 0, 2000, config.height) //limites del mundo
-       
-        
+    
     this.physics.add.collider(this.mario, this.floor) //colision entre mario y el suelo
-        
 
     this.cameras.main.setBounds(0, 0, 2000, config.height) //limites de la camara
     this.cameras.main.startFollow(this.mario) //la camara sigue a mario
@@ -94,32 +92,38 @@ function create() {
 }
 function update() {
 
+    const {keys, mario } = this
+    const isMarioTouchingFloor = mario.body.touching.down //si mario toca el suelo
+    const isLeftKeyDown = keys.left.isDown //si la tecla izquierda esta presionada
+    const isRightKeyDown = keys.right.isDown //si la tecla derecha esta presionada
+    const isUpKeyDown = keys.up.isDown //si la tecla arriba esta presionada
+
     if(this.mario.isDead) return
 
-    if (this.keys.left.isDown) {
-        this.mario.anims.play('mario-walk', true)
-        this.mario.x -=2
-        this.mario.flipX = true //giramos el sprite de mario
+    if (isLeftKeyDown) {
+        isMarioTouchingFloor && mario.anims.play('mario-walk', true)
+        mario.x -=2
+        mario.flipX = true //giramos el sprite de mario
     }
-    else if (this.keys.right.isDown) {
-        this.mario.anims.play('mario-walk', true)
-        this.mario.x += 2
-        this.mario.flipX = false //giramos el sprite de mario
-    }else{
-        this.mario.anims.play('mario-idle', true)
+    else if (isRightKeyDown) {
+        isMarioTouchingFloor && mario.anims.play('mario-walk', true)
+        mario.x += 2
+        mario.flipX = false //giramos el sprite de mario
+    }else if (isMarioTouchingFloor) { //si mario toca el suelo
+        mario.anims.play('mario-idle', true)
     }
 
-    if (this.keys.up.isDown && this.mario.body.touching.down) { //si mario toca el suelo
-        this.mario.setVelocityY(-300) //salto
-        this.mario.anims.play('mario-jump', true)
+    if (isUpKeyDown && isMarioTouchingFloor) { //si mario toca el suelo
+        mario.setVelocityY(-300) //salto
+        mario.anims.play('mario-jump', true)
         this.sound.add('jump', {volume: 0.01 }).play() //reproducimos el sonido de salto
 
     }
 
-    if (this.mario.y >= config.height){
-        this.mario.isDead = true //mario muere si cae al suelo
-        this.mario.anims.play('mario-dead', true)
-        this.mario.setCollideWorldBounds(false) //mario no colisiona con el mundo
+    if (mario.y >= config.height){
+        mario.isDead = true //mario muere si cae al suelo
+        mario.anims.play('mario-dead', true)
+        mario.setCollideWorldBounds(false) //mario no colisiona con el mundo
         this.sound.add('gameover', { volume: 0.1 }).play() //reproducimos el sonido de game over;
 
         setTimeout(() => {
@@ -127,7 +131,7 @@ function update() {
         }, 3000); // el sonido se detendrá después de 1.5 segundos
 
         setTimeout(() => {
-            this.mario.setVelocityY(-350)
+            mario.setVelocityY(-350)
         }, 100)
 
 
