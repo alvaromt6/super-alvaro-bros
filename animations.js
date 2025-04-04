@@ -3,7 +3,7 @@ export const createAnimations = (game) => {
         key:'mario-walk',
         frames: game.anims.generateFrameNumbers( //Genera los frames de mario que indiquemos
             'mario',
-            { start: 3, end: 1 }
+            { start: 1, end: 3 }
         ),
         frameRate: 12,
         repeat: -1
@@ -23,4 +23,30 @@ export const createAnimations = (game) => {
         key: 'mario-dead',
         frames: [{ key: 'mario', frame: 4 }],
         })
+
+    game.anims.create({
+        key: 'goomba-walk',
+        frames: game.anims.generateFrameNumbers(
+            'goomba',
+            { start: 0, end: 1 }
+        ),
+        frameRate: 12,
+        repeat: -1
+    })
+
+    game.anims.create({
+        key: 'goomba-dead',
+        frames: [{ key: 'goomba', frame: 2 }],
+    })
+    
+    game.anims.create({
+        key: 'coin-idle',
+        frames: game.anims.generateFrameNumbers(
+            'coin',
+            { start: 0, end: 4 }
+        ),
+        frameRate: 12,
+        repeat: -1
+    })
+
 }

@@ -9,12 +9,12 @@ export function checkControls({ mario, keys }) {
 
     if (isLeftKeyDown) {
         isMarioTouchingFloor && mario.anims.play('mario-walk', true)
-        mario.x -=2
+        mario.x -=1
         mario.flipX = true //giramos el sprite de mario
     }
     else if (isRightKeyDown) {
         isMarioTouchingFloor && mario.anims.play('mario-walk', true)
-        mario.x += 2
+        mario.x += 1
         mario.flipX = false //giramos el sprite de mario
     }else if (isMarioTouchingFloor) { //si mario toca el suelo
         mario.anims.play('mario-idle', true)
@@ -23,7 +23,5 @@ export function checkControls({ mario, keys }) {
     if (isUpKeyDown && isMarioTouchingFloor) { //si mario toca el suelo
         mario.setVelocityY(-300) //salto
         mario.anims.play('mario-jump', true)
-        this.sound.add('jump', {volume: 0.01 }).play() //reproducimos el sonido de salto
-
     }
 }
