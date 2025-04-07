@@ -1,4 +1,11 @@
 export const createAnimations = (game) => {
+
+    //MARIO NORMAL
+    game.anims.create({
+        key: 'mario-idle',
+        frames: [{ key: 'mario', frame: 0 }],
+    })
+
     game.anims.create({
         key:'mario-walk',
         frames: game.anims.generateFrameNumbers( //Genera los frames de mario que indiquemos
@@ -7,11 +14,6 @@ export const createAnimations = (game) => {
         ),
         frameRate: 12,
         repeat: -1
-    })
-
-    game.anims.create({
-        key: 'mario-idle',
-        frames: [{ key: 'mario', frame: 0 }],
     })
 
     game.anims.create({
@@ -24,6 +26,34 @@ export const createAnimations = (game) => {
         frames: [{ key: 'mario', frame: 4 }],
         })
 
+        //MARIO GROWN
+    game.anims.create({
+        key: 'mario-grown-idle',
+        frames: [{ key: 'mario-grown', frame: 0 }],
+    })
+
+    game.anims.create({
+        key:'mario-grown-walk',
+        frames: game.anims.generateFrameNumbers( //Genera los frames de mario que indiquemos
+            'mario-grown',
+            { start: 1, end: 3 }
+        ),
+        frameRate: 12,
+        repeat: -1
+    })
+
+    game.anims.create({
+        key: 'mario-grown-jump',
+        frames: [{ key: 'mario-grown', frame: 5 }],
+        })
+
+    game.anims.create({
+        key: 'mario-grown-dead',
+        frames: [{ key: 'mario-grown', frame: 4 }],
+        })
+
+
+        //GOOMBA
     game.anims.create({
         key: 'goomba-walk',
         frames: game.anims.generateFrameNumbers(
@@ -39,6 +69,8 @@ export const createAnimations = (game) => {
         frames: [{ key: 'goomba', frame: 2 }],
     })
     
+
+        //COIN
     game.anims.create({
         key: 'coin-idle',
         frames: game.anims.generateFrameNumbers(

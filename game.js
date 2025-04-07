@@ -85,6 +85,12 @@ function create() {
     this.collectibles
         .create(300,100, 'coin')
         .anims.play('coin-idle', true)
+    this.collectibles
+        .create(200,config.height - 40, 'supermushroom')
+        .anims.play('supermushroom-idle', true)
+
+
+
 
 
     this.physics.add.overlap(this.mario, this.collectibles,
@@ -135,16 +141,44 @@ function onHitEnemy(mario, enemy) {
         killMario(this)
     }
 }
+function collectItem (mario, item) {
+    const { texture: { key } } = item
+    item.destroy()
 
-function collectItem(mario, item) {
-    if (item.texture.key === 'coin') {
-        item.destroy()
-        playAudio('coin-pickup', this, {volume: 0.2})
+    if (key === 'coin') {
+        playAudio('coin-pickup', this, { volume: 0.1 })
         addToScore(100, item, this)
-    }else{
-        console.log('la seta')
+
+    } else if (key === 'supermushroom') {
+        this.physics.world.pause()
+        this.anims.pauseAll()
+
+        playAudio('powerup', this, { volume: 0.1 })
+
+        let i = 0
+        const interval = setInterval(() => {
+            i++
+            mario.anims.play(i % 2 === 0
+                ? 'mario-grown-idle'
+                : 'mario-idle'
+            )
+        }, 100)
+
+        mario.isBlocked = true
+        mario.isGrown = true
+
+        setTimeout(() => {
+            mario.setDisplaySize(18, 32)
+            mario.body.setSize(18, 32)
+            mario.isGrown = true
+            this.anims.resumeAll()
+            mario.isBlocked = false
+            clearInterval(interval)
+            this.physics.world.resume()
+        }, 1000)
     }
-}
+    }
+
 
 
 function killMario (game){
